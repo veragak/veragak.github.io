@@ -210,7 +210,12 @@
     .tile.big { grid-column: span 2; grid-row: span 2; }
     .tile.text { grid-column: span 2; }
   }
-  @media (max-width: 480px) { .tile p { display: none; } .tile.big p { display: block; } }
+  @media (max-width: 480px) {
+    .tile .cap p { display: none; }
+    .tile.big .cap p { display: block; }
+    .tile.text { padding: 20px; }
+    .tile.text .q { font-size: 19px; }
+  }
 
   /* ---------- Skills (deep) ---------- */
   .skills { background: var(--deep); color: var(--light); padding-top: 40px; }
