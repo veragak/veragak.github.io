@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vera Gak Anagrova</title>
+<meta name="description" content="Hi, I'm Vera. I use data to understand people and help the planet. Data scientist from Lanzarote, living in Rotterdam." />
+<meta property="og:title" content="Vera Gak Anagrova" />
+<meta property="og:description" content="I use data to understand people and help the planet." />
+<meta property="og:image" content="https://veragak.github.io/img/ocean.jpg" />
+<meta property="og:url" content="https://veragak.github.io/" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#f4ede2" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%232f8f83'/%3E%3Cpath d='M18 18 L32 48 L46 18' fill='none' stroke='%23f4ede2' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    /* Lanzarote, top to bottom of a dive */
+    --sand: #f4ede2;
+    --sand-2: #ece2d2;
+    --shallow: #dcece8;
+    --sea: #2f8f83;
+    --ocean: #0f4c6e;
+    --deep: #0a2a42;
+    --volcanic: #111315;
+    --ink: #13222c;
+    --soft: #4f5d66;
+    --light: #e9f1f2;
+    --light-soft: #a9bec6;
+    --head: "Bricolage Grotesque", system-ui, sans-serif;
+    --body: "Inter", system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--sand); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.65; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  @media (max-width: 600px) { .wrap { padding: 0 16px; } body { font-size: 16px; } }
+
+  h1, h2, h3 { font-family: var(--head); font-weight: 600; letter-spacing: -.02em; line-height: 1.08; }
+  h2 { font-size: clamp(32px, 5vw, 52px); margin-bottom: 18px; }
+  .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--sea); margin-bottom: 14px; }
+  .intro { font-size: clamp(17px, 2vw, 19px); color: var(--soft); max-width: 52ch; }
+  section { padding: 110px 0; }
+  @media (max-width: 700px) { section { padding: 76px 0; } }
+
+  /* ---------- Nav ---------- */
+  .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 20; transition: background .3s, color .3s; }
+  .nav .wrap { display: flex; justify-content: space-between; align-items: center; height: 64px; }
+  .nav.scrolled { background: color-mix(in srgb, var(--nav-bg, var(--sand)) 85%, transparent); backdrop-filter: blur(10px); }
+  .nav .name { font-family: var(--head); font-weight: 700; font-size: 18px; text-decoration: none; }
+  .nav ul { display: flex; gap: 24px; list-style: none; font-size: 14px; font-weight: 500; }
+  .nav ul a { text-decoration: none; opacity: .75; }
+  .nav ul a:hover { opacity: 1; }
+  .nav.dark { color: var(--light); }
+  @media (max-width: 700px) { .nav ul li.opt { display: none; } }
+
+  /* ---------- Depth gauge ---------- */
+  .gauge { position: fixed; right: 22px; top: 50%; transform: translateY(-50%); z-index: 15; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 11px; font-weight: 600; letter-spacing: .06em; color: var(--sea); transition: color .3s; }
+  .gauge .track { width: 2px; height: 160px; background: currentColor; opacity: .25; position: relative; border-radius: 2px; }
+  .gauge .bubble { position: absolute; left: 50%; top: 0; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: currentColor; opacity: 1; }
+  .gauge.dark { color: var(--light-soft); }
+  @media (max-width: 900px) { .gauge { display: none; } }
+
+  /* ---------- Photo frames (show a calm placeholder until a photo is added) ---------- */
+  .ph { position: relative; overflow: hidden; background: linear-gradient(135deg, var(--sea), var(--ocean)); }
+  .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease, transform .6s ease; }
+  .ph img.on { opacity: 1; }
+  .ph.empty img { display: none; }
+  .ph.empty::after { content: attr(data-file); position: absolute; left: 14px; top: 12px; font-size: 12px; color: rgba(255,255,255,.7); font-family: ui-monospace, monospace; }
+
+  /* ---------- Hero (surface) ---------- */
+  .hero { position: relative; overflow: hidden; min-height: 100svh; display: flex; align-items: center; padding: 100px 0 150px; background: linear-gradient(180deg, var(--sand) 0%, var(--sand) 70%, var(--sand-2) 100%); }
+  .hero-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 56px; align-items: center; }
+  .hero .hello { font-size: 18px; color: var(--sea); font-weight: 600; margin-bottom: 10px; }
+  .hero h1 { font-size: clamp(44px, 7.4vw, 86px); line-height: 1; margin-bottom: 26px; }
+  .hero .line { font-size: clamp(20px, 2.6vw, 26px); line-height: 1.35; color: var(--ink); max-width: 22ch; margin-bottom: 30px; font-family: var(--head); font-weight: 400; }
+  .hero .line em { font-style: normal; color: var(--sea); }
+  .hero .meta { color: var(--soft); font-size: 15px; margin-bottom: 32px; }
+  .btns { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn { display: inline-block; text-decoration: none; padding: 13px 24px; border-radius: 999px; font-weight: 600; font-size: 15px; transition: transform .15s ease, background .2s; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.solid { background: var(--ink); color: var(--sand); }
+  .btn.line-b { border: 1.5px solid var(--ink); }
+  /* soft waves rolling along the bottom of the hero */
+  .waves { position: absolute; left: 0; right: 0; bottom: 0; height: 120px; pointer-events: none; }
+  .wave { position: absolute; left: 0; bottom: 0; width: 200%; height: 100%; background-repeat: repeat-x; background-size: 50% 100%; animation: drift 22s linear infinite; }
+  .wave.w1 { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0 50 C240 15 480 15 720 50 C960 85 1200 85 1440 50 V120 H0Z' fill='%230f4c6e' fill-opacity='0.18'/%3E%3C/svg%3E"); animation-duration: 30s; }
+  .wave.w2 { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0 62 C240 30 480 30 720 62 C960 94 1200 94 1440 62 V120 H0Z' fill='%232f8f83' fill-opacity='0.28'/%3E%3C/svg%3E"); animation-duration: 22s; animation-direction: reverse; }
+  .wave.w3 { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0 78 C240 52 480 52 720 78 C960 104 1200 104 1440 78 V120 H0Z' fill='%235fb3a6' fill-opacity='0.35'/%3E%3C/svg%3E"); animation-duration: 16s; }
+  .wave.w4 { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0 98 C240 82 480 82 720 98 C960 114 1200 114 1440 98 V120 H0Z' fill='%23ece2d2' fill-opacity='1'/%3E%3C/svg%3E"); animation-duration: 26s; animation-direction: reverse; }
+  @keyframes drift { to { transform: translateX(-50%); } }
+  @media (max-width: 700px) { .waves { height: 80px; } }
+  .sea-map { position: relative; width: 100%; max-width: 440px; aspect-ratio: 4 / 5; justify-self: center; }
+  .sea-map svg { width: 100%; height: 100%; overflow: visible; }
+  .sea-map path.lz { fill: var(--sea); fill-opacity: .035; stroke: var(--sea); stroke-opacity: .08; stroke-width: 1; }
+  .sea-map path { fill: none; stroke-width: 1.8; stroke-linejoin: round; }
+  .coords { position: absolute; right: 0; bottom: 0; text-align: right; font-size: 12px; font-weight: 600; letter-spacing: .08em; color: var(--sea); line-height: 1.5; }
+  .coords span { display: block; font-weight: 400; letter-spacing: 0; color: var(--soft); font-size: 13px; }
+  @media (max-width: 820px) {
+    .hero { min-height: auto; padding-top: 96px; padding-bottom: 110px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+    .sea-map { max-width: 300px; }
+  }
+
+  /* ---------- About (shallows) ---------- */
+  .about { background: linear-gradient(180deg, var(--sand-2) 0%, var(--shallow) 100%); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+  .about p { margin-bottom: 16px; color: var(--soft); }
+  .about p strong { color: var(--ink); font-weight: 600; }
+  .journey { list-style: none; position: relative; padding-left: 34px; margin-top: 8px; }
+  .journey::before { content: ""; position: absolute; left: 8px; top: 10px; bottom: 10px; width: 2px; background: repeating-linear-gradient(to bottom, var(--sea) 0 6px, transparent 6px 12px); }
+  .journey li { position: relative; padding-bottom: 30px; }
+  .journey li:last-child { padding-bottom: 0; }
+  .journey li::before { content: ""; position: absolute; left: -32px; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: var(--shallow); border: 3px solid var(--sea); }
+  .journey li.now::before { background: var(--sea); }
+  .journey .place { font-family: var(--head); font-size: 26px; font-weight: 600; line-height: 1.1; }
+  .journey .what { font-size: 15px; color: var(--soft); }
+  .journey .between { font-size: 14px; color: var(--sea); font-style: italic; padding-bottom: 30px; }
+  .journey .between::before { display: none; }
+  @media (max-width: 820px) { .about-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+  /* ---------- Why data ---------- */
+  .whydata { background: var(--shallow); padding-top: 40px; }
+  .whydata .answer { font-family: var(--head); font-weight: 600; font-size: clamp(28px, 4.4vw, 46px); line-height: 1.15; letter-spacing: -.02em; max-width: 24ch; margin-bottom: 48px; }
+  .whydata .answer em { font-style: normal; color: var(--sea); }
+  .reasons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 36px 56px; border-top: 1px solid rgba(19,34,44,.12); padding-top: 36px; }
+  .reasons .n { font-family: var(--head); font-size: 15px; font-weight: 700; color: var(--sea); margin-bottom: 6px; }
+  .reasons h3 { font-size: 22px; margin-bottom: 8px; }
+  .reasons p { color: var(--soft); font-size: 16px; }
+  @media (max-width: 820px) { .reasons { grid-template-columns: 1fr; gap: 28px; } }
+
+  /* ---------- Data for good (open water) ---------- */
+  .good { background: linear-gradient(180deg, var(--shallow) 0%, #b9d9d4 100%); }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+  .filters button { font: inherit; font-size: 14px; font-weight: 600; padding: 8px 16px; border-radius: 999px; border: 1.5px solid rgba(19,34,44,.18); background: transparent; color: var(--ink); cursor: pointer; }
+  .filters button.on { background: var(--ink); border-color: var(--ink); color: var(--sand); }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 24px; }
+  .card { perspective: 1400px; transition: transform .25s ease; }
+  .card:hover { transform: translateY(-4px); }
+  .card[hidden] { display: none; }
+  .card-inner { display: grid; height: 100%; transition: transform .7s ease; transform-style: preserve-3d; }
+  .card.flipped .card-inner { transform: rotateY(180deg); }
+  .face { grid-area: 1 / 1; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: rgba(255,255,255,.62); border: 1px solid rgba(255,255,255,.8); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .face.back { transform: rotateY(180deg); background: rgba(255,255,255,.88); }
+  .flip { align-self: flex-start; font: inherit; font-size: 13px; font-weight: 600; color: var(--ink); background: rgba(47,143,131,.14); border: 0; border-radius: 999px; padding: 7px 14px; cursor: pointer; }
+  .flip:hover { background: rgba(47,143,131,.24); }
+  .face.back h4 { font-family: var(--head); font-size: 19px; font-weight: 600; }
+  .face.back ul { list-style: none; display: grid; gap: 10px; flex: 1; }
+  .face.back li { position: relative; padding-left: 18px; font-size: 14.5px; color: var(--soft); line-height: 1.5; }
+  .face.back li::before { content: ""; position: absolute; left: 0; top: 8px; width: 7px; height: 7px; border-radius: 50%; background: var(--sea); }
+  .links { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+  .card .topic { font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--sea); }
+  .card h3 { font-size: 20px; line-height: 1.2; }
+  .card p { font-size: 15px; color: var(--soft); line-height: 1.55; }
+  .card .why { margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(19,34,44,.1); font-size: 14px; color: var(--ink); }
+  .card .why b { color: var(--sea); }
+  .card .built { display: flex; flex-wrap: wrap; gap: 6px; }
+  .card .built span { font-size: 12.5px; font-weight: 500; padding: 3px 10px; border-radius: 6px; background: rgba(47,143,131,.12); color: var(--ink); }
+  .card .gh { font-size: 14px; font-weight: 600; color: var(--sea); text-decoration: none; }
+  .card .gh:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .more { margin-top: 32px; text-align: center; }
+  .more a { font-weight: 600; color: var(--ink); text-decoration: none; border-bottom: 1.5px solid var(--sea); padding-bottom: 2px; }
+  @media (max-width: 900px) { .cards { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .cards { grid-template-columns: 1fr; } }
+
+  /* ---------- What I love (going deeper) ---------- */
+  .love { background: linear-gradient(180deg, #b9d9d4 0%, var(--sea) 18%, var(--ocean) 60%, var(--deep) 100%); color: var(--light); }
+  .love .eyebrow { color: #9fe0d6; }
+  .love .intro { color: var(--light-soft); }
+  .mosaic { display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 230px; gap: 16px; margin-top: 48px; }
+  .tile { position: relative; border-radius: 20px; overflow: hidden; grid-column: span 2; }
+  .tile.big { grid-column: span 4; grid-row: span 2; }
+  .tile.tall { grid-row: span 2; }
+  .tile .ph { position: absolute; inset: 0; }
+  .tile { cursor: zoom-in; }
+  .tile:hover .ph img.on { transform: scale(1.04); }
+  .tile .ph.empty + .cap { pointer-events: none; }
+  .tile.text { cursor: default; background: linear-gradient(135deg, rgba(255,255,255,.1), rgba(255,255,255,.03)); border: 1px solid rgba(255,255,255,.14); padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; }
+  .tile.text .q { font-family: var(--head); font-size: 22px; line-height: 1.3; color: #fff; margin-bottom: 12px; }
+  .tile.text h3 { font-size: 15px; letter-spacing: .1em; text-transform: uppercase; color: #9fe0d6; margin: 0; }
+  .tile.text .book { font-size: 14px; color: #cfe0e3; margin-top: 8px; line-height: 1.45; }
+  .dots { position: absolute; top: 14px; right: 14px; z-index: 2; display: flex; gap: 6px; }
+  .dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: rgba(255,255,255,.45); cursor: pointer; }
+  .dots button.on { background: #fff; }
+
+  /* full-screen photo viewer */
+  .lb { position: fixed; inset: 0; z-index: 60; background: rgba(5, 15, 22, .94); display: flex; align-items: center; justify-content: center; padding: 64px 16px 72px; }
+  .lb[hidden] { display: none; }
+  .lb img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; }
+  .lb button { position: absolute; background: rgba(255,255,255,.1); color: #fff; border: 0; width: 48px; height: 48px; border-radius: 50%; font-size: 26px; line-height: 1; cursor: pointer; }
+  .lb button:hover { background: rgba(255,255,255,.2); }
+  .lb .x { top: 14px; right: 14px; }
+  .lb .prev { left: 14px; top: 50%; transform: translateY(-50%); }
+  .lb .next { right: 14px; top: 50%; transform: translateY(-50%); }
+  .lb .count { position: absolute; bottom: 24px; left: 0; right: 0; text-align: center; color: #a9bec6; font-size: 14px; }
+  .tile .cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 60px 22px 20px; background: linear-gradient(to top, rgba(6,22,34,.85), transparent); }
+  .tile h3 { font-size: 22px; margin-bottom: 4px; }
+  .tile p { font-size: 14px; color: #d3e2e6; line-height: 1.5; max-width: 40ch; }
+  @media (max-width: 820px) {
+    .mosaic { grid-template-columns: 1fr 1fr; grid-auto-rows: 200px; }
+    .tile, .tile.tall { grid-column: span 1; grid-row: span 1; }
+    .tile.big { grid-column: span 2; grid-row: span 2; }
+    .tile.text { grid-column: span 2; }
+  }
+  @media (max-width: 480px) { .tile p { display: none; } .tile.big p { display: block; } }
+
+  /* ---------- Skills (deep) ---------- */
+  .skills { background: var(--deep); color: var(--light); padding-top: 40px; }
+  .skills-row { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; align-items: start; border-top: 1px solid rgba(255,255,255,.12); padding-top: 48px; }
+  .skills h2 { font-size: clamp(26px, 3.4vw, 34px); }
+  .skills p { color: var(--light-soft); font-size: 15px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chips span { padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,.18); font-size: 15px; }
+  .chips span.lang { border-color: rgba(159,224,214,.45); color: #bdeee6; }
+  @media (max-width: 700px) { .skills-row { grid-template-columns: 1fr; gap: 20px; } }
+
+  /* ---------- Contact (volcanic) ---------- */
+  .contact { background: linear-gradient(180deg, var(--deep) 0%, var(--volcanic) 45%); color: var(--light); text-align: center; padding: 130px 0 70px; }
+  .contact .eyebrow { color: #9fe0d6; }
+  .contact h2 { font-size: clamp(34px, 6vw, 64px); max-width: 16ch; margin: 0 auto 22px; }
+  .contact .intro { color: var(--light-soft); margin: 0 auto 38px; }
+  .contact .btns { justify-content: center; }
+  .contact .btn.solid { background: #9fe0d6; color: var(--volcanic); }
+  .contact .btn.line-b { border-color: rgba(255,255,255,.3); color: var(--light); }
+  .contact .btn.line-b:hover { background: rgba(255,255,255,.06); }
+  footer { background: var(--volcanic); color: #6f7b80; text-align: center; font-size: 13px; padding: 0 16px 36px; }
+
+  /* gentle reveal */
+  .up { opacity: 0; transform: translateY(16px); transition: opacity .7s ease, transform .7s ease; }
+  .up.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .up { opacity: 1; transform: none; transition: none; }
+    .wave { animation: none; }
+    .ph img, .card, .card-inner, .btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="name" href="#top">Vera</a>
+    <ul>
+      <li class="opt"><a href="#about">About</a></li>
+      <li class="opt"><a href="#why">Why data</a></li>
+      <li class="opt"><a href="#good">Data for good</a></li>
+      <li class="opt"><a href="#love">What I love</a></li>
+      <li><a href="#contact">Let's talk</a></li>
+    </ul>
+  </div>
+</header>
+
+<div class="gauge" id="gauge" aria-hidden="true">
+  <span id="depth">0 m</span>
+  <div class="track"><div class="bubble" id="bubble"></div></div>
+</div>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="top" data-depth-theme="light">
+    <div class="wrap hero-grid">
+      <div class="up">
+        <p class="hello">Hi, I'm</p>
+        <h1>Vera Gak<br />Anagrova</h1>
+        <p class="line">I use data to <em>understand people</em> and <em>help the planet.</em></p>
+        <p class="meta">Data Scientist at Danone · From Lanzarote, living in Rotterdam</p>
+        <div class="btns">
+          <a class="btn solid" href="#contact">Let's talk</a>
+          <a class="btn line-b" href="cv.pdf" target="_blank" rel="noopener">Download CV</a>
+        </div>
+      </div>
+      <div class="sea-map up" aria-hidden="true">
+        <svg id="contours" viewBox="-200 -250 400 500"><path class="lz" d="M197 -200 L171 -180 L179 -130 L162 -90 L153 -20 L127 40 L83 80 L39 100 L-13 120 L-48 130 L-74 150 L-127 200 L-162 180 L-197 190 L-188 140 L-162 100 L-171 60 L-136 10 L-83 -20 L-48 -40 L-13 -70 L31 -80 L74 -80 L118 -140 L144 -170Z" transform="scale(1.15)" /></svg>
+        <p class="coords">29.0° N · 13.6° W<span>Lanzarote, where it all started</span></p>
+      </div>
+    </div>
+    <div class="waves" aria-hidden="true"><div class="wave w1"></div><div class="wave w2"></div><div class="wave w3"></div><div class="wave w4"></div></div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="about" id="about" data-depth-theme="light">
+    <div class="wrap about-grid">
+      <div class="up">
+        <p class="eyebrow">About me</p>
+        <h2>From an island in the Atlantic to the North Sea.</h2>
+        <p>I was born and raised in <strong>Lanzarote</strong>, in the Canary Islands. I grew up by the ocean, and it's still my favourite place in the world.</p>
+        <p>I loved sport so much that at 13 I moved to <strong>Madrid</strong> to play more competitive tennis.</p>
+        <p>In 2020, in the middle of COVID, I got an academic and sports scholarship to <strong>Oklahoma Baptist University</strong>. A year later the tennis team closed because of COVID budget cuts. So I moved to <strong>New York</strong>, where I played NCAA Division II tennis and finished my degree in Business Management, with minors in Economics and Computer Science. I stayed one more year in New York to work.</p>
+        <p>After New York I spent a month at home, then four months exploring <strong>Asia</strong>. I came back to Lanzarote in December and stayed for eight months, until my master's in data science started in September. That's how I ended up in <strong>Rotterdam</strong>, and I stayed. Today I'm a Data Scientist at Danone, in the Global Quality &amp; Food Safety team. I help run the dashboards and automations that show how regions and plants in more than 120 countries perform against their quality and food safety targets.</p>
+        <p>I speak Spanish, Russian and English, and I'm always happy to try a fourth language over coffee.</p>
+      </div>
+      <ol class="journey up" aria-label="My journey">
+        <li><div class="place">Lanzarote</div><div class="what">Where I grew up. Ocean, volcanoes and my first tennis racket.</div></li>
+        <li><div class="place">Madrid</div><div class="what">Moved at 13 to play competitive tennis.</div></li>
+        <li><div class="place">Oklahoma</div><div class="what">2020: scholarship at Oklahoma Baptist University, until COVID closed the team.</div></li>
+        <li><div class="place">New York</div><div class="what">NCAA tennis, my degree, then a year of work.</div></li>
+        <li><div class="place">Asia</div><div class="what">Four months travelling.</div></li>
+        <li><div class="place">Lanzarote</div><div class="what">Eight months at home before my master's.</div></li>
+        <li class="now"><div class="place">Rotterdam</div><div class="what">MSc at Erasmus, now Data Scientist at Danone. Home for now.</div></li>
+        <li class="between">…and many trips in between</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ WHY DATA ============ -->
+  <section class="whydata" id="why" data-depth-theme="light">
+    <div class="wrap">
+      <p class="eyebrow up">Why data</p>
+      <p class="answer up">I chose data because it's the best way I know to <em>understand people</em> and <em>actually help them.</em></p>
+      <div class="reasons">
+        <div class="up">
+          <p class="n">01</p>
+          <h3>I love understanding why</h3>
+          <p>I like to analyse things and understand why they work the way they do. Finding patterns and connections that aren't obvious at first is what I enjoy most.</p>
+        </div>
+        <div class="up">
+          <p class="n">02</p>
+          <h3>I'm curious about people</h3>
+          <p>I've always wanted to know why people think and act the way they do. Data lets me answer that with evidence, not guesses.</p>
+        </div>
+        <div class="up">
+          <p class="n">03</p>
+          <h3>I want my work to help</h3>
+          <p>Good intentions aren't enough. Data shows where help is needed most, and whether it's really working.</p>
+        </div>
+        <div class="up">
+          <p class="n">04</p>
+          <h3>It connects everything I love</h3>
+          <p>The ocean, health, sport, sustainability: data is useful in all of them. It lets me work on what I care about.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DATA FOR GOOD ============ -->
+  <section class="good" id="good" data-depth-theme="light">
+    <div class="wrap">
+      <div class="up">
+        <p class="eyebrow">Data for good</p>
+        <h2>Projects I care about</h2>
+        <p class="intro">I like work where the numbers lead to something real: more people helped, a healthier ocean, better decisions.</p>
+      </div>
+      <div class="filters" role="group" aria-label="Filter projects">
+        <button class="on" data-filter="all">All</button>
+        <button data-filter="sustainability">🌱 Sustainability</button>
+        <button data-filter="health">❤️ Health</button>
+        <button data-filter="social">🤝 Social impact</button>
+      </div>
+      <div class="cards">
+        <article class="card up" data-topic="health">
+          <div class="card-inner">
+          <div class="face front">
+            <span class="topic">❤️ Health</span>
+            <h3>Tracking food safety performance in 120+ countries</h3>
+            <p>At Danone I run the global dashboard that shows how each region and plant performs against its quality and food safety targets. I also automate the reporting behind it.</p>
+            <p class="why"><b>Why it matters:</b> when regions and plants can see where they miss their targets, they can act on it. That keeps food safe for millions of people.</p>
+            <div class="built"><span>Power BI</span><span>DAX</span><span>Power Automate</span><span>Python</span><span>SAP &amp; Veeva data</span></div>
+            <button class="flip" aria-label="Show results">What I found ↻</button>
+          </div>
+          <div class="face back" aria-hidden="true">
+            <span class="topic">❤️ Health</span>
+            <h4>What I found</h4>
+            <ul><li>8 global KPIs showing how regions and 300+ production sites in 120+ countries perform against their quality and food safety targets, covering 146+ brands.</li><li>Automated data collection and reporting with Power Automate and Python, cutting hours of manual work.</li><li>Led the global rollout of a new performance tool, training teams around the world to use it.</li></ul>
+            <button class="flip" aria-label="Show project">↺ Back</button>
+          </div>
+          </div>
+        </article>
+        <article class="card up" data-topic="social">
+          <div class="card-inner">
+          <div class="face front">
+            <span class="topic">🤝 Social impact</span>
+            <h3>Helping UNICEF keep its donors</h3>
+            <p>I built a model that predicts which donors might stop giving, so the team can reach out before they leave.</p>
+            <p class="why"><b>Why it matters:</b> every donor who stays means more children UNICEF can keep supporting.</p>
+            <div class="built"><span>Python</span><span>R</span><span>XGBoost</span><span>LLM-simulated interventions</span></div>
+            <div class="links"><a class="gh" href="https://github.com/veragak/unicef-donor-retention" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show results">What I found ↻</button>
+          </div>
+          <div class="face back" aria-hidden="true">
+            <span class="topic">🤝 Social impact</span>
+            <h4>What I found</h4>
+            <ul><li>Trust and the feeling of making an impact drive loyalty most. Income stops mattering once you know how donors feel.</li><li>94% of donors at risk of leaving already believe in UNICEF's mission. They doubt that <em>their</em> money makes a difference.</li><li>A personal "Proof of Impact" message raised predicted loyalty (NPS) by +0.86. Bad news hurt about twice as much as good news helped.</li></ul>
+            <div class="links"><a class="gh" href="https://github.com/veragak/unicef-donor-retention" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show project">↺ Back</button>
+          </div>
+          </div>
+        </article>
+        <article class="card up" data-topic="sustainability">
+          <div class="card-inner">
+          <div class="face front">
+            <span class="topic">🌱 Sustainability</span>
+            <h3>What 50,000 reviews say about second-hand</h3>
+            <p>My MSc thesis: how people really feel when brands start reselling their own second-hand products.</p>
+            <p class="why"><b>Why it matters:</b> resale is more sustainable, and it only works if people trust it. My thesis combined psychology, data and sustainability.</p>
+            <div class="built"><span>Python</span><span>R</span><span>Sentiment analysis (VADER)</span><span>Topic modelling (LDA)</span><span>Synthetic difference-in-differences</span></div>
+            <div class="links"><a class="gh" href="https://github.com/veragak/consumer-perceptions-branded-resale" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show results">What I found ↻</button>
+          </div>
+          <div class="face back" aria-hidden="true">
+            <span class="topic">🌱 Sustainability</span>
+            <h4>What I found</h4>
+            <ul><li>On average, launching a resale channel did not make customers rate a brand higher.</li><li>After a launch, customers wrote more negatively about price and value.</li><li>Brands reacted very differently: outdoor and athletic brands lost on every measure, while premium fashion gained on sustainability.</li></ul>
+            <div class="links"><a class="gh" href="https://github.com/veragak/consumer-perceptions-branded-resale" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show project">↺ Back</button>
+          </div>
+          </div>
+        </article>
+        <article class="card up" data-topic="sustainability">
+          <div class="card-inner">
+          <div class="face front">
+            <span class="topic">🌱 Sustainability</span>
+            <h3>An early warning for salmon farms</h3>
+            <p>At an AI hackathon, we built a tool that reads real-time ocean data and warns farmers when conditions turn risky.</p>
+            <p class="why"><b>Why it matters:</b> healthier fish, less loss, and a better-understood ocean.</p>
+            <div class="built"><span>TypeScript</span><span>Live ocean data</span><span>Risk scoring</span><span>AI assistant</span></div>
+            <div class="links"><a class="gh" href="https://github.com/veragak/fish-guardian-ai" target="_blank" rel="noopener">See the project on GitHub ↗</a><a class="gh" href="https://fish-guardian-ai.lovable.app" target="_blank" rel="noopener">Try the live app ↗</a></div>
+            <button class="flip" aria-label="Show results">What I found ↻</button>
+          </div>
+          <div class="face back" aria-hidden="true">
+            <span class="topic">🌱 Sustainability</span>
+            <h4>What I found</h4>
+            <ul><li>It can flag disease risk about 48 hours before fish show symptoms, by tracking oxygen levels driven by sea temperature, waves and wind.</li><li>Each cage gets a risk score from 0 to 10, with spoken alerts and an AI assistant farmers can ask in plain language.</li><li>It targets a real problem: Norwegian salmon farming loses more than €940 million a year to fish deaths.</li></ul>
+            <div class="links"><a class="gh" href="https://github.com/veragak/fish-guardian-ai" target="_blank" rel="noopener">See the project on GitHub ↗</a><a class="gh" href="https://fish-guardian-ai.lovable.app" target="_blank" rel="noopener">Try the live app ↗</a></div>
+            <button class="flip" aria-label="Show project">↺ Back</button>
+          </div>
+          </div>
+        </article>
+        <article class="card up" data-topic="sustainability">
+          <div class="card-inner">
+          <div class="face front">
+            <span class="topic">🌱 Sustainability</span>
+            <h3>Which companies are really green?</h3>
+            <p>I grouped companies by their environmental impact and predicted which ones score high on ESG, with explainable AI to show why.</p>
+            <p class="why"><b>Why it matters:</b> it helps people reward the companies that actually do the work.</p>
+            <div class="built"><span>R</span><span>Hierarchical clustering</span><span>Random forest</span><span>Explainable AI (LIME)</span></div>
+            <div class="links"><a class="gh" href="https://github.com/veragak/corporate-sustainability-analysis" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show results">What I found ↻</button>
+          </div>
+          <div class="face back" aria-hidden="true">
+            <span class="topic">🌱 Sustainability</span>
+            <h4>What I found</h4>
+            <ul><li>Environmental factors matter most for a company's ESG rating, together with its size and profitability.</li><li>The random forest beat linear and simple tree models on accuracy.</li><li>Explainable AI showed strong non-linear effects and clear differences between regions.</li></ul>
+            <div class="links"><a class="gh" href="https://github.com/veragak/corporate-sustainability-analysis" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show project">↺ Back</button>
+          </div>
+          </div>
+        </article>
+        <article class="card up" data-topic="health">
+          <div class="card-inner">
+          <div class="face front">
+            <span class="topic">❤️ Health</span>
+            <h3>Helping detect breast cancer</h3>
+            <p>A model that classifies tumours as malignant or benign, plus a small app that gives predictions in real time.</p>
+            <p class="why"><b>Why it matters:</b> tools like this can support doctors in making faster decisions.</p>
+            <div class="built"><span>R</span><span>Support vector machines</span><span>Logistic regression</span><span>Shiny app</span></div>
+            <div class="links"><a class="gh" href="https://github.com/veragak/breast-cancer-svm" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show results">What I found ↻</button>
+          </div>
+          <div class="face back" aria-hidden="true">
+            <span class="topic">❤️ Health</span>
+            <h4>What I found</h4>
+            <ul><li>The tuned SVM beat the linear SVM and logistic regression, especially at catching malignant tumours.</li><li>The shape of the tumour (radius, area, concavity) was the strongest signal.</li><li>The results stayed stable across repeated cross-validation.</li></ul>
+            <div class="links"><a class="gh" href="https://github.com/veragak/breast-cancer-svm" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show project">↺ Back</button>
+          </div>
+          </div>
+        </article>
+        <article class="card up" data-topic="health">
+          <div class="card-inner">
+          <div class="face front">
+            <span class="topic">❤️ Health</span>
+            <h3>What helps people live longer?</h3>
+            <p>Using global health indicators, I looked for the factors that matter most for life expectancy.</p>
+            <p class="why"><b>Why it matters:</b> it shows where health policy can make the biggest difference.</p>
+            <div class="built"><span>R</span><span>PCA</span><span>Elastic Net regression</span></div>
+            <div class="links"><a class="gh" href="https://github.com/veragak/life-expectancy-analysis" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show results">What I found ↻</button>
+          </div>
+          <div class="face back" aria-hidden="true">
+            <span class="topic">❤️ Health</span>
+            <h4>What I found</h4>
+            <ul><li>A country's economic development and health system (income, healthcare spending, clean water and sanitation) explain the biggest differences in how long people live.</li><li>Five themes, including chronic disease and lifestyle risks like obesity, explain about 81% of the differences between countries.</li><li>The best model predicts life expectancy to within about 3.3 years: 81.9 for the Netherlands, 76.7 for Colombia and 64.2 for Kenya.</li></ul>
+            <div class="links"><a class="gh" href="https://github.com/veragak/life-expectancy-analysis" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show project">↺ Back</button>
+          </div>
+          </div>
+        </article>
+        <article class="card up" data-topic="health">
+          <div class="card-inner">
+          <div class="face front">
+            <span class="topic">❤️ Health</span>
+            <h3>Does screen time make us less happy?</h3>
+            <p>I predicted people's happiness from sleep, stress and social media habits.</p>
+            <p class="why"><b>Why it matters:</b> mental wellbeing matters, and this project mixes psychology and data, my favourite combination.</p>
+            <div class="built"><span>R</span><span>k-nearest neighbours</span><span>PCA</span></div>
+            <div class="links"><a class="gh" href="https://github.com/veragak/knn-happiness-prediction" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show results">What I found ↻</button>
+          </div>
+          <div class="face back" aria-hidden="true">
+            <span class="topic">❤️ Health</span>
+            <h4>What I found</h4>
+            <ul><li>By comparing each person with the 18 people most similar to them, the model predicted happiness to within about 1 point on a 1–10 scale.</li><li>Everyday habits like sleep, stress, exercise and screen time carry real signal about how people feel.</li><li>The model was best for happy people and tended to overestimate how happy the least happy people were. Those are exactly the people you'd most want to spot.</li></ul>
+            <div class="links"><a class="gh" href="https://github.com/veragak/knn-happiness-prediction" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show project">↺ Back</button>
+          </div>
+          </div>
+        </article>
+        <article class="card up" data-topic="sustainability">
+          <div class="card-inner">
+          <div class="face front">
+            <span class="topic">🌱 Sustainability</span>
+            <h3>Forecasting extreme heat in Madrid</h3>
+            <p>A model that forecasts daily maximum temperatures in Madrid.</p>
+            <p class="why"><b>Why it matters:</b> heat is a growing risk in cities, and good forecasts help people prepare.</p>
+            <div class="built"><span>R</span><span>PCA</span><span>Principal component regression</span></div>
+            <div class="links"><a class="gh" href="https://github.com/veragak/predicting-extreme-weather-madrid" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show results">What I found ↻</button>
+          </div>
+          <div class="face back" aria-hidden="true">
+            <span class="topic">🌱 Sustainability</span>
+            <h4>What I found</h4>
+            <ul><li>Today's maximum temperature is an excellent predictor of tomorrow's (r ≈ 0.96).</li><li>A simple linear regression beat the more complex PCA models.</li><li>Every model struggled most with the extreme days, which are the ones that matter most.</li></ul>
+            <div class="links"><a class="gh" href="https://github.com/veragak/predicting-extreme-weather-madrid" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show project">↺ Back</button>
+          </div>
+          </div>
+        </article>
+        <article class="card up" data-topic="sustainability">
+          <div class="card-inner">
+          <div class="face front">
+            <span class="topic">🌱 Sustainability</span>
+            <h3>Why do people pick the car over the train?</h3>
+            <p>I studied what makes commuters near Oslo choose a car or public transport.</p>
+            <p class="why"><b>Why it matters:</b> knowing that helps cities make greener travel the easy choice.</p>
+            <div class="built"><span>R</span><span>Random forest</span><span>Partial dependence plots</span></div>
+            <div class="links"><a class="gh" href="https://github.com/veragak/transport-mode-oslo-random-forest-" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show results">What I found ↻</button>
+          </div>
+          <div class="face back" aria-hidden="true">
+            <span class="topic">🌱 Sustainability</span>
+            <h4>What I found</h4>
+            <ul><li>Relative travel time is by far the biggest driver: people take the car when public transport is much slower.</li><li>So making public transport faster is the strongest way to get people out of their cars.</li></ul>
+            <div class="links"><a class="gh" href="https://github.com/veragak/transport-mode-oslo-random-forest-" target="_blank" rel="noopener">See the project on GitHub ↗</a></div>
+            <button class="flip" aria-label="Show project">↺ Back</button>
+          </div>
+          </div>
+        </article>
+        <article class="card up" data-topic="sustainability">
+          <div class="card-inner">
+          <div class="face front">
+            <span class="topic">🌱 Sustainability</span>
+            <h3>Fair Trade with women in Peru</h3>
+            <p>I interned in Fair Trade marketing, helping women entrepreneurs in Peru reach more customers.</p>
+            <p class="why"><b>Why it matters:</b> fair income gives independence to women and their families.</p>
+            <div class="built"><span>Marketing</span></div>
+          </div>
+          </div>
+        </article>
+        <article class="card up" data-topic="sustainability">
+          <div class="card-inner">
+          <div class="face front">
+            <span class="topic">🌱 Sustainability</span>
+            <h3>Giving solar panels a second life</h3>
+            <p>I led a team on a business case for recycling solar panels, built around the UN Sustainable Development Goals.</p>
+            <p class="why"><b>Why it matters:</b> clean energy shouldn't leave a mountain of waste behind.</p>
+            <div class="built"><span>Business strategy</span><span>Team lead</span></div>
+          </div>
+          </div>
+        </article>
+      </div>
+      <p class="more up"><a href="https://github.com/veragak" target="_blank" rel="noopener">All my projects on GitHub →</a></p>
+    </div>
+  </section>
+
+  <!-- ============ WHAT I LOVE ============ -->
+  <!-- To add photos: put them in the img folder named after the topic.
+       First photo: ocean.jpg, animals.jpg, travel.jpg, sports.jpg, people.jpg, sunsets.jpg, food.jpg
+       More photos for the same topic: ocean-2.jpg, ocean-3.jpg ... (up to 12) and they turn into a slideshow.
+       .jpg, .jpeg and .png all work. -->
+  <section class="love" id="love" data-depth-theme="dark">
+    <div class="wrap">
+      <div class="up">
+        <p class="eyebrow">What I love</p>
+        <h2>The things that make me, me</h2>
+        <p class="intro">Away from the dashboards, this is where you'll find me.</p>
+      </div>
+      <div class="mosaic">
+        <div class="tile big up">
+          <div class="ph" data-set="ocean" data-file="img/ocean.jpg" data-alt="Vera diving"></div>
+          <div class="cap"><h3>The ocean</h3><p>I'm an SSI Divemaster, and I volunteered on a coral restoration project in the Philippines. Underwater is where I feel most at home.</p></div>
+        </div>
+        <div class="tile tall up">
+          <div class="ph" data-set="animals" data-file="img/animals.jpg" data-alt="Animals Vera has met"></div>
+          <div class="cap"><h3>Animals</h3><p>I love animals, every kind of them, and I always care about their wellbeing.</p></div>
+        </div>
+        <div class="tile up">
+          <div class="ph" data-set="travel" data-file="img/travel.jpg" data-alt="Places Vera has travelled"></div>
+          <div class="cap"><h3>Travel</h3><p>I've lived in Spain, the US and the Netherlands, with many trips in between. New cultures keep me curious.</p></div>
+        </div>
+        <div class="tile up">
+          <div class="ph" data-set="sports" data-file="img/sports.jpg" data-alt="Vera doing sport"></div>
+          <div class="cap"><h3>Sports</h3><p>Sport is a big part of who I am. It makes me feel good and clears my head. Tennis my whole life, now marathons.</p></div>
+        </div>
+        <div class="tile up">
+          <div class="ph" data-set="people" data-file="img/people.jpg" data-alt="Vera with friends, family and teammates"></div>
+          <div class="cap"><h3>People</h3><p>I love meeting new people and hearing their stories wherever I go, and spending time with my friends and family.</p></div>
+        </div>
+        <div class="tile up">
+          <div class="ph" data-set="sunsets" data-file="img/sunsets.jpg" data-alt="Sunsets"></div>
+          <div class="cap"><h3>Sunsets</h3><p>I'll stop whatever I'm doing for a good sunset, especially by the ocean.</p></div>
+        </div>
+        <div class="tile up">
+          <div class="ph" data-set="food" data-file="img/food.jpg" data-alt="Food from Vera's travels"></div>
+          <div class="cap"><h3>Food</h3><p>I love eating. Trying the local food is my favourite way to get to know a new place.</p></div>
+        </div>
+        <div class="tile text up">
+          <p class="q">Why do people think and act the way they do? I never get tired of asking.</p>
+          <h3>Psychology</h3>
+          <p class="book">Currently reading: <i>Thinking, Fast and Slow</i> by Daniel Kahneman</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SKILLS ============ -->
+  <section class="skills" data-depth-theme="dark">
+    <div class="wrap skills-row up">
+      <div>
+        <h2>What I work with</h2>
+        <p>The tools behind the projects.</p>
+      </div>
+      <div class="chips">
+        <span>Python</span><span>R</span><span>SQL</span><span>Power BI</span><span>Power Automate</span><span>Machine learning</span><span>NLP</span>
+        <span class="lang">Spanish</span><span class="lang">Russian</span><span class="lang">English</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="contact" id="contact" data-depth-theme="dark">
+    <div class="wrap up">
+      <p class="eyebrow">Let's talk</p>
+      <h2>I love meeting new people.</h2>
+      <p class="intro">So let's talk about data, impact, the ocean or tennis. Whatever brought you here, I'd love to hear from you.</p>
+      <div class="btns">
+        <a class="btn solid" href="mailto:veragakanagrova@gmail.com">Email me</a>
+        <a class="btn line-b" href="https://www.linkedin.com/in/vera-gak-anagrova" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn line-b" href="https://github.com/veragak" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn line-b" href="cv.pdf" target="_blank" rel="noopener">Download CV</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="lb" id="lb" hidden role="dialog" aria-label="Photo viewer">
+  <button class="x" aria-label="Close">×</button>
+  <button class="prev" aria-label="Previous photo">‹</button>
+  <img id="lb-img" alt="" />
+  <button class="next" aria-label="Next photo">›</button>
+  <p class="count" id="lb-count"></p>
+</div>
+
+<footer>Made in Rotterdam, with Lanzarote in my heart · © <span id="year">2026</span> Vera Gak Anagrova</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // Photos that failed before this script ran still need their placeholder
+  document.querySelectorAll(".ph img").forEach(function (img) {
+    if (img.complete && img.naturalWidth === 0) img.parentNode.classList.add("empty");
+  });
+
+  // Fade content in as you scroll
+  (function () {
+    var els = document.querySelectorAll(".up");
+    if (!("IntersectionObserver" in window)) { els.forEach(function (e) { e.classList.add("in"); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+    }, { threshold: 0.1 });
+    els.forEach(function (e) { io.observe(e); });
+  })();
+
+  // Depth gauge + nav colour: the page is a dive, 0 m at the top, 30 m at the bottom
+  (function () {
+    var nav = document.getElementById("nav");
+    var gauge = document.getElementById("gauge");
+    var depth = document.getElementById("depth");
+    var bubble = document.getElementById("bubble");
+    var sections = document.querySelectorAll("[data-depth-theme]");
+    var MAX_DEPTH = 30, TRACK = 160;
+    var ticking = false;
+
+    function update() {
+      var max = document.documentElement.scrollHeight - innerHeight;
+      var p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+      depth.textContent = Math.round(p * MAX_DEPTH) + " m";
+      bubble.style.transform = "translateY(" + (p * (TRACK - 10)) + "px)";
+
+      // theme follows whichever section sits under the nav / the middle of the screen
+      var navTheme = "light", midTheme = "light";
+      sections.forEach(function (s) {
+        var r = s.getBoundingClientRect();
+        if (r.top <= 40 && r.bottom > 40) navTheme = s.dataset.depthTheme;
+        if (r.top <= innerHeight / 2 && r.bottom > innerHeight / 2) midTheme = s.dataset.depthTheme;
+      });
+      nav.classList.toggle("scrolled", scrollY > 20);
+      nav.classList.toggle("dark", navTheme === "dark");
+      nav.style.setProperty("--nav-bg", navTheme === "dark" ? "#0a2a42" : "#f4ede2");
+      gauge.classList.toggle("dark", midTheme === "dark");
+      ticking = false;
+    }
+    addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    addEventListener("resize", update);
+    update();
+  })();
+
+  // Hero: a slowly moving depth map of an island, like a nautical chart
+  (function () {
+    var svg = document.getElementById("contours");
+    if (!svg) return;
+    var NS = "http://www.w3.org/2000/svg";
+    var colours = ["#13222c", "#7a6a55", "#b9a98f", "#8fcfc4", "#5fb3a6", "#2f8f83", "#237a7a", "#1b6474", "#165570", "#0f4c6e", "#0c3d5a"];
+    var rings = colours.map(function (c, i) {
+      var p = document.createElementNS(NS, "path");
+      p.setAttribute("stroke", c);
+      p.setAttribute("opacity", i === 0 ? 1 : (1 - i * 0.06).toFixed(2));
+      if (i === 0) { p.style.fill = c; }
+      svg.appendChild(p);
+      return p;
+    });
+    var still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var ROT = -0.6; // Lanzarote runs north-east to south-west
+
+    function shape(i, t) {
+      var r = 26 + i * 19, d = "";
+      for (var k = 0; k <= 96; k++) {
+        var a = (k / 96) * Math.PI * 2;
+        var wob = Math.sin(2 * a + 0.8 + t * 0.25) * 0.55 + Math.sin(3 * a + 2.1 - t * 0.18) * 0.3 + Math.sin(5 * a + i * 0.4 + t * 0.4) * 0.15;
+        var R = r * (1 + 0.16 * wob);
+        var x = Math.cos(a) * R * 0.62, y = Math.sin(a) * R;
+        var X = x * Math.cos(ROT) - y * Math.sin(ROT), Y = x * Math.sin(ROT) + y * Math.cos(ROT);
+        d += (k ? "L" : "M") + X.toFixed(1) + " " + Y.toFixed(1);
+      }
+      return d + "Z";
+    }
+    var t = 0;
+    function draw() {
+      rings.forEach(function (p, i) { p.setAttribute("d", shape(i, t)); });
+      t += 0.01;
+      if (!still) requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+  // Project filter: All / Sustainability / Health
+  (function () {
+    var buttons = document.querySelectorAll(".filters button");
+    buttons.forEach(function (b) {
+      b.addEventListener("click", function () {
+        buttons.forEach(function (x) { x.classList.toggle("on", x === b); });
+        var f = b.dataset.filter;
+        document.querySelectorAll(".card[data-topic]").forEach(function (c) {
+          c.hidden = f !== "all" && c.dataset.topic !== f;
+          if (!c.hidden) c.classList.add("in");
+        });
+      });
+    });
+  })();
+
+  // Project cards flip to show results
+  document.querySelectorAll(".card .flip").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var card = btn.closest(".card");
+      var flipped = card.classList.toggle("flipped");
+      card.querySelector(".face.front").setAttribute("aria-hidden", flipped);
+      card.querySelector(".face.back").setAttribute("aria-hidden", !flipped);
+    });
+  });
+
+  // What I love: each topic can hold several photos (ocean.jpg, ocean-2.jpg, ocean-3.jpg ...)
+  (function () {
+    var lb = document.getElementById("lb"), lbImg = document.getElementById("lb-img"), lbCount = document.getElementById("lb-count");
+    var current = null, idx = 0;
+
+    function show(ph, i) {
+      var imgs = ph._imgs;
+      ph._idx = (i + imgs.length) % imgs.length;
+      imgs.forEach(function (im, k) { im.classList.toggle("on", k === ph._idx); });
+      if (ph._dots) ph._dots.forEach(function (b, k) { b.classList.toggle("on", k === ph._idx); });
+    }
+
+    document.querySelectorAll(".tile .ph[data-set]").forEach(function (ph) {
+      ph._imgs = []; ph._idx = 0;
+      var set = ph.dataset.set, started = false;
+
+      function start() {
+        if (started) return; started = true;
+        if (!ph._imgs.length) { ph.classList.add("empty"); return; }
+        if (ph._imgs.length < 2) return;
+        var dots = document.createElement("div"); dots.className = "dots";
+        ph._dots = ph._imgs.map(function (_, k) {
+          var b = document.createElement("button");
+          b.setAttribute("aria-label", "Photo " + (k + 1));
+          b.addEventListener("click", function (e) { e.stopPropagation(); show(ph, k); });
+          dots.appendChild(b); return b;
+        });
+        ph.parentNode.appendChild(dots);
+        show(ph, 0);
+        setInterval(function () { if (!ph.parentNode.matches(":hover")) show(ph, ph._idx + 1); }, 4500);
+      }
+      // try ocean.jpg, then ocean-2.jpg, ocean-3.jpg ... in any common format
+      function load(name, done) {
+        var exts = ["jpg", "jpeg", "png", "JPG", "JPEG", "PNG", "webp"], k = 0;
+        (function next() {
+          if (k >= exts.length) return done(null);
+          var im = new Image();
+          im.onload = function () { done(im); };
+          im.onerror = function () { k++; next(); };
+          im.src = "img/" + name + "." + exts[k];
+        })();
+      }
+      // small gaps in the numbering are fine; stop after 3 missing numbers in a row
+      (function probe(n, missed) {
+        if (n > 12 || missed >= 3) return start();
+        load(n === 1 ? set : set + "-" + n, function (im) {
+          if (!im) return probe(n + 1, missed + 1);
+          im.alt = ph.dataset.alt;
+          if (!ph._imgs.length) im.className = "on";
+          ph.appendChild(im); ph._imgs.push(im);
+          probe(n + 1, 0);
+        });
+      })(1, 0);
+
+      ph.parentNode.addEventListener("click", function () {
+        if (!ph._imgs.length) return;
+        current = ph; idx = ph._idx; open();
+      });
+    });
+
+    function open() { render(); lb.hidden = false; document.body.style.overflow = "hidden"; }
+    function close() { lb.hidden = true; document.body.style.overflow = ""; current = null; }
+    function render() {
+      var imgs = current._imgs;
+      idx = (idx + imgs.length) % imgs.length;
+      lbImg.src = imgs[idx].src; lbImg.alt = imgs[idx].alt;
+      lbCount.textContent = imgs.length > 1 ? (idx + 1) + " / " + imgs.length : "";
+      lb.querySelector(".prev").hidden = lb.querySelector(".next").hidden = imgs.length < 2;
+    }
+    lb.querySelector(".x").addEventListener("click", close);
+    lb.querySelector(".prev").addEventListener("click", function () { idx--; render(); });
+    lb.querySelector(".next").addEventListener("click", function () { idx++; render(); });
+    lb.addEventListener("click", function (e) { if (e.target === lb) close(); });
+    addEventListener("keydown", function (e) {
+      if (lb.hidden) return;
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowLeft") { idx--; render(); }
+      if (e.key === "ArrowRight") { idx++; render(); }
+    });
+  })();
+</script>
+</body>
+</html>
