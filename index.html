@@ -64,10 +64,16 @@
 
   /* ---------- Depth gauge ---------- */
   .gauge { position: fixed; right: 22px; top: 50%; transform: translateY(-50%); z-index: 15; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 11px; font-weight: 600; letter-spacing: .06em; color: var(--sea); transition: color .3s; }
-  .gauge .track { width: 2px; height: 160px; background: currentColor; opacity: .25; position: relative; border-radius: 2px; }
+  .gauge .track { width: 2px; height: 160px; background: color-mix(in srgb, currentColor 25%, transparent); position: relative; border-radius: 2px; }
   .gauge .bubble { position: absolute; left: 50%; top: 0; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: currentColor; opacity: 1; }
   .gauge.dark { color: var(--light-soft); }
-  @media (max-width: 900px) { .gauge { display: none; } }
+  /* on phones the gauge becomes a small pill at the bottom of the screen */
+  @media (max-width: 900px) {
+    .gauge { top: auto; bottom: 16px; right: 16px; transform: none; flex-direction: row; gap: 10px; padding: 7px 14px; border-radius: 999px; font-size: 12px; background: color-mix(in srgb, var(--sand) 88%, transparent); backdrop-filter: blur(8px); box-shadow: 0 4px 14px rgba(0, 0, 0, .12); }
+    .gauge.dark { background: rgba(10, 42, 66, .85); }
+    .gauge .track { width: 56px; height: 2px; }
+    .gauge .bubble { top: 50%; left: 0; width: 8px; height: 8px; margin: -4px 0 0 0; }
+  }
 
   /* ---------- Photo frames (show a calm placeholder until a photo is added) ---------- */
   .ph { position: relative; overflow: hidden; background: linear-gradient(135deg, var(--sea), var(--ocean)); }
@@ -702,14 +708,21 @@
     var depth = document.getElementById("depth");
     var bubble = document.getElementById("bubble");
     var sections = document.querySelectorAll("[data-depth-theme]");
-    var MAX_DEPTH = 30, TRACK = 160;
+    var track = bubble.parentNode;
+    var phone = matchMedia("(max-width: 900px)");
+    var MAX_DEPTH = 30;
     var ticking = false;
 
     function update() {
       var max = document.documentElement.scrollHeight - innerHeight;
       var p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
       depth.textContent = Math.round(p * MAX_DEPTH) + " m";
-      bubble.style.transform = "translateY(" + (p * (TRACK - 10)) + "px)";
+      // vertical track on desktop, horizontal pill on phones
+      if (phone.matches) {
+        bubble.style.transform = "translateX(" + (p * (track.offsetWidth - bubble.offsetWidth)) + "px)";
+      } else {
+        bubble.style.transform = "translateY(" + (p * (track.offsetHeight - bubble.offsetHeight)) + "px)";
+      }
 
       // theme follows whichever section sits under the nav / the middle of the screen
       var navTheme = "light", midTheme = "light";
